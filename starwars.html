@@ -1,0 +1,155 @@
+<!DOCTYPE html> <!-- starwars.html --> 
+<html lang="nl"> 
+    <head> 
+        <title> Starwars </title>
+        <meta charset="utf-8" /> 
+        <style>
+            #spreuk{
+                background-color: lightgray;
+            }
+        </style>
+        <script>
+            var selectedKarakter = 1;
+            const laadPage = async () => {
+                const response1 = await fetch("karakters/") 
+                const data1 = await response1.json()
+                console.log("laadDropdown: ", data1)
+                let nieuweInhoud1 = ''
+                data1.forEach(el => nieuweInhoud1 +=
+                    `<option onclick="updateKarakter('${el.foto}', '${el.id}')">${el.naam}</option>`
+                )
+                document.querySelector("#selectOption").innerHTML = nieuweInhoud1
+                console.log("responseSelect: ", response1)   
+
+                document.querySelector("#imageFrame").src = `afbeeldingen/${selectedKarakter}.jpg`
+
+                const response2 = await fetch(`karakters/${selectedKarakter}/spreuken`)
+                const data2 = await response2.json()
+                console.log("responseSpreuken: ", data2)
+                let nieuweInhoud2 = ''
+                data2.forEach(el => nieuweInhoud2 +=
+                    `
+                    <div id="spreuk">${el.tekst}</div>
+                    <div id="score">${el.score}</div>
+                    <button onclick="addToScore(${el.id}, ${el.score})">+</button>
+                    <button onclick="removeFromScore(${el.id}, ${el.score})">-</button>
+                    </br>
+                    `
+                )
+                document.querySelector("#divtofill").innerHTML = nieuweInhoud2
+                console.log("responseFillingDiv: ", response2) 
+
+            }
+            
+            const updateKarakter = async (foto, id) => {
+                selectedKarakter = id
+                document.querySelector("#imageFrame").src = foto
+
+                const response = await fetch(`karakters/${id}/spreuken`)
+                const data = await response.json()
+                console.log("responseSpreuken: ", data)
+                let nieuweInhoud = ''
+                data.forEach(el => nieuweInhoud +=
+                    `
+                    <div id="spreuk">${el.tekst}</div>
+                    <div id="score">${el.score}</div>
+                    <button onclick="addToScore(${el.id}, ${el.score})">+</button>
+                    <button onclick="removeFromScore(${el.id}, ${el.score})">-</button>
+                    </br>
+                    `
+                )
+                document.querySelector("#divtofill").innerHTML = nieuweInhoud
+                console.log("responseFillingDiv: ", response) 
+            }
+
+            const voegToe = async () => {
+                const data = new FormData();
+                data.set( "karakterid", selectedKarakter );
+                data.set( "tekst", document.querySelector("#nieuweSpreuk").value );
+                jsondata = JSON.stringify(Object.fromEntries(data));
+                fetch("spreuken/", {method:'POST', body:jsondata}) 
+                .then(respons => console.log('status', respons)) 
+
+                const response2 = await fetch(`karakters/${selectedKarakter}/spreuken`)
+                const data2 = await response2.json()
+                console.log("responseSpreuken: ", data2)
+                let nieuweInhoud2 = '</br>'
+                data2.forEach(el => nieuweInhoud2 +=
+                    `
+                    <div id="spreuk">${el.tekst}</div>
+                    <div id="score">${el.score}</div>
+                    <button onclick="addToScore(${el.id}, ${el.score})">+</button>
+                    <button onclick="removeFromScore(${el.id}, ${el.score})">-</button>
+                    </br>
+                    `
+                )
+                document.querySelector("#divtofill").innerHTML = nieuweInhoud2
+                console.log("responseFillingDiv: ", response2)
+                
+            }
+
+            const addToScore = async (id, score) => {
+                const data = new FormData();
+                const newScore = score + 1
+                data.set( "score", newScore );
+                jsondata = JSON.stringify(Object.fromEntries(data));
+                fetch("spreuken/" + id, {method:'PATCH', body:jsondata}) 
+                .then(respons => console.log('status', respons)) 
+
+                const response2 = await fetch(`karakters/${selectedKarakter}/spreuken`)
+                const data2 = await response2.json()
+                console.log("responseSpreuken: ", data2)
+                let nieuweInhoud2 = '</br>'
+                data2.forEach(el => nieuweInhoud2 +=
+                    `
+                    <div id="spreuk">${el.tekst}</div>
+                    <div id="score">${el.score}</div>
+                    <button onclick="addToScore(${el.id}, ${el.score})">+</button>
+                    <button onclick="removeFromScore(${el.id}, ${el.score})">-</button>
+                    </br>
+                    `
+                )
+                document.querySelector("#divtofill").innerHTML = nieuweInhoud2
+                console.log("responseFillingDiv: ", response2) 
+            }
+
+            const removeFromScore = async (id, score) => {
+                const data = new FormData();
+                const newScore = score - 1
+                data.set( "score", newScore );
+                jsondata = JSON.stringify(Object.fromEntries(data));
+                fetch("spreuken/" + id, {method:'PATCH', body:jsondata}) 
+                .then(respons => console.log('status', respons)) 
+
+                const response2 = await fetch(`karakters/${selectedKarakter}/spreuken`)
+                const data2 = await response2.json()
+                console.log("responseSpreuken: ", data2)
+                let nieuweInhoud2 = '</br>'
+                data2.forEach(el => nieuweInhoud2 +=
+                    `
+                    <div id="spreuk">${el.tekst}</div>
+                    <div id="score">${el.score}</div>
+                    <button onclick="addToScore(${el.id}, ${el.score})">+</button>
+                    <button onclick="removeFromScore(${el.id}, ${el.score})">-</button>
+                    </br>
+                    `
+                )
+                document.querySelector("#divtofill").innerHTML = nieuweInhoud2
+                console.log("responseFillingDiv: ", response2)
+            }
+
+
+        </script>
+    </head>
+    <body onload="laadPage()"> 
+        <h1 style="color:red;">Memorable Star Wars Quotes</h1>
+            <div> 
+                <img src="afbeeldingen/ImperialWalker.jpg" style="width:128px;height:250px;"> 
+                <select id="selectOption"></select>
+                <img id="imageFrame" style="width:128px;height:200px;">
+            </div>
+            
+            <div id="divtofill"></div> </br>
+            <input type="text" id="nieuweSpreuk" required> <button onclick="voegToe()">+</button>
+    </body> 
+</html>

@@ -1,0 +1,8 @@
+	Options +FollowSymLinks -MultiViews
+	RewriteEngine On
+
+    RewriteRule ^karakters/?$ karakters.php [L]
+    RewriteRule ^spreuken/?$ spreuken.php [L]
+    RewriteRule ^karakters/(.*)/spreuken/?$ spreuken.php?karakter=$1 [L]
+    RewriteRule ^spreuken/(.*)$ spreuken.php?id=$1 [L]
+    RewriteRule ^karakters/(.*)$ karakters.php?id=$1 [L]

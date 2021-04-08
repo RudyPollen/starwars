@@ -1,0 +1,17 @@
+API is testversie
+
+zip uitpakken in een publieke map van wamp of xampp
+voor gebruik zie "API endpoints" 
+
+gebruikte database is een sqlite-database
+deze bevindt zich in dezelfde map als het php-bestand
+de database kun je bewerken met bijvoorbeeld "DB Browser for SQLite"
+
+in php.ini mag geen puntkomma staan voor:
+extension=sqlite3
+als je dit wijzigt moet je apache herstarten
+
+in httpd.conf mag er geen hekje staan voor:
+LoadModule rewrite_module modules/mod_rewrite.so
+als je dit wijzigt moet je apache herstarten
+
